@@ -15,7 +15,7 @@ server=FastAPI(
     title="VOX_DIURNA",
     version="1.0",
     lifespan=lifespan,
-    docs_url="/",
+    docs_url=None,
     redoc_url=None
 )
 server.state.limiter=limiter
