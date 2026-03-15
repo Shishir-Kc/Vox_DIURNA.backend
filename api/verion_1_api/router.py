@@ -11,7 +11,7 @@ from api.rate_limiter import limiter
 import uuid
 router = APIRouter()
 
-@router.get("/")
+@router.get("/ping")
 def server_home():
     return {"status":status.HTTP_200_OK}
 
