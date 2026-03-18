@@ -20,13 +20,18 @@ server = FastAPI(
 
 server.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://vox-diurna.pages.dev/"],
+    allow_origins=[
+        "https://vox-diurna.pages.dev",
+        "http://localhost",
+        "http://localhost:3000",
+        "http://localhost:5173",
+    ],
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 server.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=["vox-diurna.pages.dev", "localhost"]
+    TrustedHostMiddleware, allowed_hosts=["vox-diurna-backend.onrender.com", "*.onrender.com", "localhost"]
 )
 
 server.state.limiter = limiter

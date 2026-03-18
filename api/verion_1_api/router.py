@@ -24,7 +24,7 @@ def get_posts(request:Request,session:Session_Dep):
 @limiter.limit('5/minutes')
 def upload_post(request:Request,post_schema:Post,session:Session_Dep,api_key=Depends(validate_api_key)):
     if not create_post(post_schema,session=session):
-        HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST
         )
     return{"status":status.HTTP_202_ACCEPTED}
