@@ -4,21 +4,33 @@ from api import router
 from api.rate_limiter import limiter
 from slowapi.middleware import SlowAPIASGIMiddleware
 from slowapi import _rate_limit_exceeded_handler
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 
 @asynccontextmanager
-async def lifespan(server:FastAPI):
+async def lifespan(server: FastAPI):
     print("booting up")
     yield
 
-server=FastAPI(
-    title="VOX_DIURNA",
-    version="1.0",
-    lifespan=lifespan,
-    docs_url=None,
-    redoc_url=None
+
+server = FastAPI(
+    title="VOX_DIURNA", version="1.0", lifespan=lifespan, docs_url=None, redoc_url=None
 )
-server.state.limiter=limiter
+
+server.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://vox-diurna.pages.dev/"],
+    allow_credentials=True,
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
+server.add_middleware(
+    TrustedHostMiddleware, allowed_hosts=["vox-diurna.pages.dev", "localhost"]
+)
+
+server.state.limiter = limiter
 server.add_middleware(SlowAPIASGIMiddleware)
-server.add_exception_handler(429,_rate_limit_exceeded_handler)
-server.include_router(router,prefix="/api")
+server.add_exception_handler(429, _rate_limit_exceeded_handler)  # pyright: ignore[]
+server.include_router(router, prefix="/api")
+
