@@ -47,5 +47,5 @@ def retrive_single_post(slug: str, id: uuid.UUID, session: Session_Dep):
 
 @router.post("/check/spelling")
 @limiter.limit("5/minutes")
-async def check_content_typo(content: Content_Schema, api_key=Depends(validate_api_key)):
+async def check_content_typo(request:Request,content: Content_Schema, api_key=Depends(validate_api_key)):
     return await correct_spelling(user_content=content.content)
