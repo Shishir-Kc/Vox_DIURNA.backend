@@ -6,6 +6,9 @@ from CRUD.read.read_post import read_posts
 from database.schema.upload.post import Post_Search
 from api.api_key.auth.authenticate import validate_api_key
 from api.rate_limiter import limiter
+from database.schema.Ai.content import Content_Schema
+from Ai.Cloud.grok import correct_spelling
+
 
 import uuid
 
@@ -26,7 +29,7 @@ def get_posts(request: Request, session: Session_Dep):
 @router.post("/upload/post")
 @limiter.limit("5/minutes")
 def upload_post(
-    request: Request,
+    request: Request,  # type:ignore
     post_schema: Post,
     session: Session_Dep,
     api_key=Depends(validate_api_key),
@@ -41,3 +44,7 @@ def retrive_single_post(slug: str, id: uuid.UUID, session: Session_Dep):
     post = Post_Search(slug=slug, id=id)
     return get_single_post(session=session, post=post)
 
+
+@router.post("/check/spelling")
+async def check_content_typo(content: Content_Schema,api_key=Depends(validate_api_key)):
+    return await correct_spelling(user_content=content.content)
