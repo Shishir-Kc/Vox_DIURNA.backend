@@ -15,7 +15,7 @@ async def lifespan(server: FastAPI):
 
 
 server = FastAPI(
-    title="VOX_DIURNA", version="1.0", lifespan=lifespan, docs_url="/", redoc_url=None
+    title="VOX_DIURNA", version="1.0", lifespan=lifespan, docs_url=None, redoc_url=None
 )
 
 server.add_middleware(
@@ -23,9 +23,9 @@ server.add_middleware(
     allow_origins=[
         "https://vox-diurna.pages.dev",
         "https://shishirkhatri.com.np",
-        "http://localhost",
-        "http://localhost:3000",
-        "http://localhost:5173",
+        #"http://localhost",
+        #"http://localhost:3000",
+        #"http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -36,10 +36,10 @@ server.add_middleware(
     allowed_hosts=[
         "vox-diurna-backend.onrender.com",
         "*.onrender.com",
-        "localhost",
-        "127.0.0.1",
-        "localhost:8000",
-        "127.0.0.1:8000",
+        #"localhost",
+        #"127.0.0.1",
+        #"localhost:8000",
+        #"127.0.0.1:8000",
     ],
 )
 
