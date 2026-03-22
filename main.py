@@ -49,3 +49,8 @@ server.state.limiter = limiter
 server.add_middleware(SlowAPIASGIMiddleware)
 server.add_exception_handler(429, _rate_limit_exceeded_handler)  # pyright: ignore[]
 server.include_router(router, prefix="/api")
+
+app.state.limiter = limiter
+app.add_middleware(SlowAPIASGIMiddleware)
+app.add_exception_handler(429, _rate_limit_exceeded_handler)  # pyright: ignore[]
+app.include_router(router, prefix="/api")
