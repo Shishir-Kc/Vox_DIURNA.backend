@@ -18,6 +18,8 @@ server = FastAPI(
     title="VOX_DIURNA", version="1.0", lifespan=lifespan, docs_url=None, redoc_url=None
 )
 
+app =server
+
 server.add_middleware(
     CORSMiddleware,
     allow_origins=[
