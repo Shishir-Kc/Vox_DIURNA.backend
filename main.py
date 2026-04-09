@@ -25,6 +25,7 @@ server.add_middleware(
     allow_origins=[
         "https://vox-diurna.pages.dev",
         "https://shishirkhatri.com.np",
+        "https://blog.shishirkhatri.com.np",
         #"http://localhost",
         #"http://localhost:3000",
         #"http://localhost:5173",
