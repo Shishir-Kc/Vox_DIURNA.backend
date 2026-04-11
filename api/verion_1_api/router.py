@@ -8,6 +8,7 @@ from api.api_key.auth.authenticate import validate_api_key
 from api.rate_limiter import limiter
 from database.schema.Ai.content import Content_Schema
 from Ai.Cloud.grok import correct_spelling
+from sqlalchemy import text
 
 
 import uuid
@@ -26,7 +27,7 @@ def server_home():
 @router.get("/health")
 def health_check(session: Session_Dep):
     try:
-        session.exec("SELECT 1")
+        session.exec(text("SELECT 1"))
         return {"status": "healthy", "database": "connected"}
     except Exception as e:
         logger.error(f"Health check failed: {e}")
