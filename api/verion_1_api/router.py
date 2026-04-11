@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException, Request, Depends
 from database.schema.upload.post import Post, Post_Read, Post_Preview
 from CRUD.upload.post import create_post, get_single_post
-from database.connnection.connector import Session_Dep
+from database.connnection.connector import Session_Dep, engine
 from CRUD.read.read_post import read_posts
 from database.schema.upload.post import Post_Search
 from api.api_key.auth.authenticate import validate_api_key
@@ -11,6 +11,9 @@ from Ai.Cloud.grok import correct_spelling
 
 
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -18,6 +21,19 @@ router = APIRouter()
 @router.get("/ping")
 def server_home():
     return {"status": status.HTTP_200_OK}
+
+
+@router.get("/health")
+def health_check(session: Session_Dep):
+    try:
+        session.exec("SELECT 1")
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Database unavailable: {e}",
+        )
 
 
 @router.get("/posts", response_model=list[Post_Preview])
@@ -47,5 +63,7 @@ def retrive_single_post(slug: str, id: uuid.UUID, session: Session_Dep):
 
 @router.post("/check/spelling")
 @limiter.limit("5/minutes")
-async def check_content_typo(request:Request,content: Content_Schema, api_key=Depends(validate_api_key)):
+async def check_content_typo(
+    request: Request, content: Content_Schema, api_key=Depends(validate_api_key)
+):
     return await correct_spelling(user_content=content.content)
