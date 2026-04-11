@@ -37,8 +37,7 @@ server.add_middleware(
 server.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=[
-        "vox-diurna-backend.onrender.com",
-        "*.onrender.com",
+        "*.fastapicloud.dev",
         #"localhost",
         #"127.0.0.1",
         #"localhost:8000",
