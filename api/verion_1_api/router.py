@@ -40,6 +40,7 @@ def health_check(session: Session_Dep):
 @router.get("/posts", response_model=list[Post_Preview])
 @limiter.limit("5/minutes")
 def get_posts(request: Request, session: Session_Dep):
+
     return read_posts(session=session)
 
 

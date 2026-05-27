@@ -14,5 +14,5 @@ class Post(SQLModel,table=True):
     date:datetime=Field(default_factory=datetime.utcnow)
     category:str
     readingTime:str
-    fatured:bool
+    featured:bool
   

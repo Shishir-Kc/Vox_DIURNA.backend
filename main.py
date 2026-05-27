@@ -6,8 +6,6 @@ from slowapi.middleware import SlowAPIASGIMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
-import logging
-import os
 
 
 @asynccontextmanager
@@ -27,9 +25,12 @@ server.add_middleware(
         "https://vox-diurna.pages.dev",
         "https://shishirkhatri.com.np",
         "https://blog.shishirkhatri.com.np",
+        "https://vox.shishirkhatri.com.np"
         # "http://localhost",
         # "http://localhost:3000",
         # "http://localhost:5173",
+        # "http://localhost:8787"
+        #
     ],
     allow_credentials=True,
     allow_methods=["*"],

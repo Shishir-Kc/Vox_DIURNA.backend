@@ -10,7 +10,7 @@ class Post(BaseModel):
     content:str 
     category:str
     readingTime:str
-    fatured:bool
+    featured:bool
     
 class Post_Read(BaseModel):
     id:uuid.UUID
@@ -21,7 +21,7 @@ class Post_Read(BaseModel):
     content:str
     category:str
     readingTime:str
-    fatured:bool
+    featured:bool
     
 class Post_Preview(BaseModel):
     id:uuid.UUID
@@ -31,7 +31,7 @@ class Post_Preview(BaseModel):
     date:datetime
     category:str
     readingTime:str
-    fatured:bool
+    featured:bool
     
 class Post_Search(BaseModel):
     id:uuid.UUID
