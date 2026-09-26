@@ -1,84 +1,33 @@
-# Vox DIURNA Backend
+# Vox DIURNA API
 
-Backend API for the Vox DIURNA blog platform, built with FastAPI and PostgreSQL.
+TypeScript Hono API. Bun manages dependencies and local scripts; Cloudflare Workers runs production with D1.
 
-## Tech Stack
+## API contract
 
-- Python 3.12
-- FastAPI
-- SQLModel + SQLAlchemy
-- PostgreSQL (psycopg2)
-- Alembic (migrations)
-- LangChain + Groq (AI spell checking)
-- SlowAPI (rate limiting)
+See [docs/API.md](docs/API.md) for the CRUD routes, JSON schemas, status codes, and copy-ready request examples. Writes require the `X-API-KEY` secret.
 
-## Project Structure
+## Local development
 
-```
-├── main.py                  # FastAPI app entry point
-├── api/
-│   ├── __init__.py          # API router aggregation
-│   ├── rate_limiter.py      # SlowAPI rate limiter config
-│   ├── api_key/auth/        # API key authentication
-│   └── verion_1_api/        # v1 endpoint routes
-├── database/
-│   ├── connnection/         # DB engine & session
-│   ├── model/post/          # SQLModel table definitions
-│   └── schema/              # Pydantic request/response schemas
-├── CRUD/
-│   ├── upload/              # Create operations
-│   └── read/                # Read operations
-├── Ai/
-│   └── Cloud/               # Groq-based spell checking
-├── alembic/                 # Database migrations
-└── pyproject.toml
+1. Install Bun, then run `bun install`.
+2. Create a D1 database with `bunx wrangler d1 create vox-diurna` and put its returned `database_id` in `wrangler.jsonc`.
+3. Apply the schema with `bun run db:migrate:local`.
+4. Add `API_KEY` to `.dev.vars` for local authenticated requests.
+5. Run `bun run dev`.
+
+## Import legacy PostgreSQL posts
+
+Set `DATABASE_URL` to a read-only PostgreSQL connection string and run `bun run db:import`. This exports every row in the legacy `post` table to `/tmp/vox-diurna-posts-import.sql`; it supports either `featured` or the historical `fatured` column and preserves IDs, dates, and featured values. Review the export, then import it with `bunx wrangler d1 execute vox-diurna --remote --file=/tmp/vox-diurna-posts-import.sql`. The legacy database is only read.
+
+## Deploy
+
+Set up the Cloudflare account and D1 database ID in `wrangler.jsonc`, then set the secret and deploy:
+
+```sh
+bunx wrangler secret put API_KEY
+bun run db:migrate:remote
+bun run deploy
 ```
 
-## API Endpoints
+The API is available at `https://api.blog.shishirkhatri.com.np`. CORS allows the existing production frontend origins and Vox Studio. Rate limiting uses two Cloudflare Rate Limiting bindings, each set to five requests per minute per client IP.
 
-| Method | Path                      | Auth | Rate Limit | Description              |
-|--------|---------------------------|------|------------|--------------------------|
-| GET    | `/api/v1/ping`            | No   | 5/min      | Server status check      |
-| GET    | `/api/v1/health`          | No   | 5/min      | Database health check    |
-| GET    | `/api/v1/posts`           | No   | 5/min      | List all posts           |
-| GET    | `/api/v1/posts/{slug}/{id}` | No | -          | Get single post          |
-| POST   | `/api/v1/upload/post`     | Yes  | 5/min      | Create a post            |
-| POST   | `/api/v1/check/spelling`  | Yes  | 5/min      | AI spell check content   |
-
-## Environment Variables
-
-Create a `.env` file:
-
-```
-DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
-API_KEY=your-api-key
-GROQ_API=your-groq-api-key
-```
-
-## Setup
-
-```bash
-# Clone and enter directory
-git clone <repo-url> && cd Vox_DIURNA.backend
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run database migrations
-alembic upgrade head
-
-# Start the server
-uvicorn main:server --host 0.0.0.0 --port 8000
-```
-
-## Authentication
-
-Protected endpoints require an `X-API-KEY` header:
-
-```
-X-API-KEY: your-api-key
-```
+Migration `0002_add_post_image.sql` adds a nullable cover image URL. Existing posts remain empty (`image: null`).

@@ -1,0 +1,26 @@
+{
+  "name": "vox-diurna-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "wrangler deploy --dry-run",
+    "db:migrate:local": "wrangler d1 migrations apply vox-diurna --local",
+    "db:migrate:remote": "wrangler d1 migrations apply vox-diurna --remote",
+    "db:import": "bun run scripts/import-posts.ts",
+    "db:import:api": "bun run scripts/import-from-api.ts"
+  },
+  "dependencies": {
+    "hono": "^4.7.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "*",
+    "@types/bun": "^1.4.2",
+    "@types/pg": "^8.15.5",
+    "pg": "^8.16.3",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.38.0"
+  }
+}

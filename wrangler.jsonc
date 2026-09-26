@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vox-diurna",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [{ "pattern": "api.blog.shishirkhatri.com.np", "custom_domain": true }],
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "vox-diurna",
+    "database_id": "ec8aa9bf-4a00-42e5-b388-b683624933ab",
+    "migrations_dir": "migrations"
+  }],
+  "unsafe": { "bindings": [
+    { "name": "POSTS_LIMITER", "type": "ratelimit", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
+    { "name": "UPLOAD_LIMITER", "type": "ratelimit", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } }
+  ] }
+}
